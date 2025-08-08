@@ -6,19 +6,20 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
 public class BurgerDaoImpl implements BurgerDao {
 
-  private EntityManager entityManager;
+  private final EntityManager entityManager;
 
   @Autowired
-  public BurgerDaoImpl() {
+  public BurgerDaoImpl(EntityManager entityManager) {
     this.entityManager = entityManager;
   }
+
 
   @Override
   @Transactional
@@ -54,6 +55,7 @@ public class BurgerDaoImpl implements BurgerDao {
     query.setParameter("breadType", breadType);
     return query.getResultList();
   }
+
 
   @Override
   public List<Burger> findByContent(String content) {

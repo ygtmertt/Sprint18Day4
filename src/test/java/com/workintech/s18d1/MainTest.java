@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(ResultAnalyzer2.class)
+@SpringBootTest
 class MainTest {
 
 
@@ -142,16 +144,22 @@ class MainTest {
         assertEquals(2, burgers.size());
     }
 
-    @Test
-    void testFindByBreadType() {
-        TypedQuery<Burger> query = mock(TypedQuery.class);
-        when(entityManager.createQuery(anyString(), eq(Burger.class))).thenReturn(query);
-        when(query.getResultList()).thenReturn(Arrays.asList(new Burger(), new Burger()));
-        List<Burger> burgers = burgerDao.findByBreadType(BreadType.BURGER);
-        assertEquals(2, burgers.size());
-    }
 
-    @Test
+  @Mock
+  private TypedQuery<Burger> query;
+
+  @Test
+  void testFindByBreadType() {
+    when(entityManager.createQuery(anyString(), eq(Burger.class))).thenReturn(query);
+    when(query.setParameter(eq("breadType"), any())).thenReturn(query);
+    when(query.getResultList()).thenReturn(Arrays.asList(new Burger(), new Burger()));
+
+    List<Burger> burgers = burgerDao.findByBreadType(BreadType.BURGER);
+    assertEquals(2, burgers.size());
+  }
+
+
+  @Test
     void testFindByContent() {
         TypedQuery<Burger> query = mock(TypedQuery.class);
         when(entityManager.createQuery(anyString(), eq(Burger.class))).thenReturn(query);
@@ -159,13 +167,15 @@ class MainTest {
         List<Burger> burgers = burgerDao.findByContent("cheese");
         assertEquals(2, burgers.size());
     }
-    @Test
-    void testImplementsBurgerDaoInterface() {
-        BurgerDaoImpl burgerDaoImpl = new BurgerDaoImpl();
-        assertTrue(burgerDaoImpl instanceof BurgerDao, "BurgerDaoImpl should implement BurgerDao interface");
-    }
+  @Test
+  void testImplementsBurgerDaoInterface() {
+    EntityManager mockEntityManager = mock(EntityManager.class);
+    BurgerDaoImpl burgerDaoImpl = new BurgerDaoImpl(mockEntityManager);
+    assertTrue(burgerDaoImpl instanceof BurgerDao, "BurgerDaoImpl should implement BurgerDao interface");
+  }
 
-    @Test
+
+  @Test
     void testBurgerErrorResponse() {
         String expectedMessage = "An error occurred";
         BurgerErrorResponse errorResponse = new BurgerErrorResponse(expectedMessage);
