@@ -161,7 +161,7 @@ class MainTest {
     }
     @Test
     void testImplementsBurgerDaoInterface() {
-        BurgerDaoImpl burgerDaoImpl = new BurgerDaoImpl(null);
+        BurgerDaoImpl burgerDaoImpl = new BurgerDaoImpl();
         assertTrue(burgerDaoImpl instanceof BurgerDao, "BurgerDaoImpl should implement BurgerDao interface");
     }
 
