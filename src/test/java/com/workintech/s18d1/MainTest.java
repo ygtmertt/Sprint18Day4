@@ -92,14 +92,25 @@ class MainTest {
         verify(entityManager).persist(burger);
     }
 
-    @Test
-    void testFindAll() {
-        TypedQuery<Burger> query = mock(TypedQuery.class);
-        when(entityManager.createQuery(anyString(), eq(Burger.class))).thenReturn(query);
-        when(query.getResultList()).thenReturn(Arrays.asList(new Burger(), new Burger()));
-        List<Burger> burgers = burgerDao.findAll();
-        assertEquals(2, burgers.size());
-    }
+  @Test
+  void testFindAll() {
+    // 1. Create a mock for the TypedQuery object
+    TypedQuery<Burger> query = mock(TypedQuery.class);
+
+    // 2. Mock the behavior of entityManager.createQuery().
+    //    When it's called, return the mocked query object.
+    when(entityManager.createQuery(anyString(), eq(Burger.class))).thenReturn(query);
+
+    // 3. Mock the behavior of the mocked query object.
+    //    When getResultList() is called, return a predefined list of burgers.
+    when(query.getResultList()).thenReturn(Arrays.asList(new Burger(), new Burger()));
+
+    // 4. Call the method under test
+    List<Burger> burgers = burgerDao.findAll();
+
+    // 5. Assert that the returned list has the expected size
+    assertEquals(2, burgers.size());
+  }
 
     @Test
     void testFindById_Exists() {
@@ -116,33 +127,40 @@ class MainTest {
         assertThrows(BurgerException.class, () -> burgerDao.findById(999L));
     }
 
-    @Test
-    void testUpdate() {
-        Burger burger = new Burger();
-        burger.setId(1L);
-        when(entityManager.merge(burger)).thenReturn(burger);
-        Burger updated = burgerDao.update(burger);
-        assertEquals(1L, updated.getId());
-    }
+  @Test
+  void testUpdate() {
+    Burger burger = new Burger();
+    burger.setId(1L);
+    // Corrected: The merge operation should return the updated burger object.
+    when(entityManager.merge(burger)).thenReturn(burger);
+    Burger updated = burgerDao.update(burger);
+    assertEquals(1L, updated.getId());
+  }
 
-    @Test
-    void testRemove() {
-        Burger burger = new Burger();
-        burger.setId(1L);
-        when(entityManager.find(Burger.class, 1L)).thenReturn(burger);
-        doNothing().when(entityManager).remove(burger);
-        Burger removed = burgerDao.remove(1L);
-        assertEquals(1L, removed.getId());
-    }
+  @Test
+  void testRemove() {
+    Burger burger = new Burger();
+    burger.setId(1L);
+    // Mock findById to return the burger
+    when(burgerDao.findById(1L)).thenReturn(burger);
+    // Mock the entityManager remove method
+    doNothing().when(entityManager).remove(burger);
 
-    @Test
-    void testFindByPrice() {
-        TypedQuery<Burger> query = mock(TypedQuery.class);
-        when(entityManager.createQuery(anyString(), eq(Burger.class))).thenReturn(query);
-        when(query.getResultList()).thenReturn(Arrays.asList(new Burger(), new Burger()));
-        List<Burger> burgers = burgerDao.findByPrice(10);
-        assertEquals(2, burgers.size());
-    }
+    Burger removed = burgerDao.remove(1L);
+    assertEquals(1L, removed.getId());
+  }
+
+  @Test
+  void testFindByPrice() {
+    TypedQuery<Burger> query = mock(TypedQuery.class);
+    when(entityManager.createQuery(anyString(), eq(Burger.class))).thenReturn(query);
+    // Mock the setParameter call to return the query object
+    when(query.setParameter(eq("price"), anyDouble())).thenReturn(query);
+    when(query.getResultList()).thenReturn(Arrays.asList(new Burger(), new Burger()));
+
+    List<Burger> burgers = burgerDao.findByPrice(10);
+    assertEquals(2, burgers.size());
+  }
 
 
   @Mock
@@ -160,13 +178,16 @@ class MainTest {
 
 
   @Test
-    void testFindByContent() {
-        TypedQuery<Burger> query = mock(TypedQuery.class);
-        when(entityManager.createQuery(anyString(), eq(Burger.class))).thenReturn(query);
-        when(query.getResultList()).thenReturn(Arrays.asList(new Burger(), new Burger()));
-        List<Burger> burgers = burgerDao.findByContent("cheese");
-        assertEquals(2, burgers.size());
-    }
+  void testFindByContent() {
+    TypedQuery<Burger> query = mock(TypedQuery.class);
+    when(entityManager.createQuery(anyString(), eq(Burger.class))).thenReturn(query);
+    // Mock the setParameter call to return the query object
+    when(query.setParameter(eq("content"), anyString())).thenReturn(query);
+    when(query.getResultList()).thenReturn(Arrays.asList(new Burger(), new Burger()));
+
+    List<Burger> burgers = burgerDao.findByContent("cheese");
+    assertEquals(2, burgers.size());
+  }
   @Test
   void testImplementsBurgerDaoInterface() {
     EntityManager mockEntityManager = mock(EntityManager.class);
