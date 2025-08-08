@@ -1,0 +1,19 @@
+-------------------------------------------------------------------------------
+Test set: com.workintech.s18d1.ApplicationPropertiesAndControllerTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.439 s <<< FAILURE! -- in com.workintech.s18d1.ApplicationPropertiesAndControllerTest
+com.workintech.s18d1.ApplicationPropertiesAndControllerTest -- Time elapsed: 0.439 s <<< ERROR!
+java.lang.IllegalStateException: Configuration error: found multiple declarations of @BootstrapWith for test class [com.workintech.s18d1.ApplicationPropertiesAndControllerTest]: [@org.springframework.test.context.BootstrapWith(value=org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTestContextBootstrapper.class), @org.springframework.test.context.BootstrapWith(value=org.springframework.boot.test.context.SpringBootTestContextBootstrapper.class)]
+	at org.springframework.test.context.BootstrapUtils.resolveExplicitTestContextBootstrapper(BootstrapUtils.java:194)
+	at org.springframework.test.context.BootstrapUtils.resolveTestContextBootstrapper(BootstrapUtils.java:150)
+	at org.springframework.test.context.BootstrapUtils.resolveTestContextBootstrapper(BootstrapUtils.java:126)
+	at org.springframework.test.context.TestContextManager.<init>(TestContextManager.java:113)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.getTestContextManager(SpringExtension.java:366)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.beforeAll(SpringExtension.java:131)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: org.json.JSONException: Forbidden numeric value: NaN
+		at org.json.JSON.checkDouble(JSON.java:25)
+		at org.json.JSONObject.put(JSONObject.java:217)
+		at com.workintech.s18d1.ResultAnalyzer.afterAll(ResultAnalyzer.java:61)
+		... 1 more
+
